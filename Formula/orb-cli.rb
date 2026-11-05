@@ -19,12 +19,15 @@
 # the download page: those stay unsigned until the darwin binaries are
 # Developer ID signed and notarized in orb-cli.yml.
 #
-# The version is not pinned in a `version` stanza on purpose: the artifact file
-# name carries it, so Homebrew detects it from the url. scripts/bump-formula.sh
-# in orbnet-app/orb rewrites the two url lines and the two sha256 lines together.
+# `version` must be declared explicitly. The artifact names end in arm64/amd64
+# and Homebrew's version detector takes the last numeric run it finds, so
+# left to itself it installs into a Cellar named "64". Not a style preference.
+# scripts/bump-formula.sh in orbnet-app/orb rewrites the version line and the
+# two sha256 lines; the urls interpolate `version` so they follow it.
 class OrbCli < Formula
   desc "Command-line client for Orb topics, sessions, and messages"
   homepage "https://orbnet.app"
+  version "0.3.2"
 
   # Every artifact this formula can install is darwin-only. The Linux and
   # Windows binaries on the download page are not covered here.
@@ -32,13 +35,12 @@ class OrbCli < Formula
 
   # url/sha256 may not live inside on_arm/on_intel — FormulaAudit/ComponentsOrder
   # rejects that in Homebrew 7 (checked with `brew style`), so the arch branch is
-  # a plain conditional. The file name carries the version, so `version` is
-  # detected from the url and must not be declared again.
+  # a plain conditional.
   if Hardware::CPU.arm?
-    url "https://download.orbnet.app/files/orb-cli_0.3.2_darwin_arm64"
+    url "https://download.orbnet.app/files/orb-cli_#{version}_darwin_arm64"
     sha256 "dd2ef1b3984068102e5515217963615f52ce2bf27437efdfb4fbed246266cd38"
   else
-    url "https://download.orbnet.app/files/orb-cli_0.3.2_darwin_amd64"
+    url "https://download.orbnet.app/files/orb-cli_#{version}_darwin_amd64"
     sha256 "5b706472ce5f6574eb0447b46df0085bc5b1939cf1f7e5b784df8cf00c62f253"
   end
 
