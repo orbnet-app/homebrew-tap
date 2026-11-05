@@ -6,8 +6,14 @@ Homebrew formulas for Orb's command-line tools.
 
 ```bash
 brew tap orbnet-app/tap
+brew trust orbnet-app/tap   # Homebrew 7: third-party taps must be trusted
 brew install orb-cli
 ```
+
+`brew trust` is not optional on Homebrew 7 — without it brew refuses to load the
+formula: *"Refusing to load formula orbnet-app/tap/orb-cli from untrusted tap"*.
+`brew trust --formula orbnet-app/tap/orb-cli` trusts just this formula if you
+would rather not trust the whole tap.
 
 Upgrade with `brew upgrade orb-cli`.
 
