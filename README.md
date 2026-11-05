@@ -4,18 +4,43 @@ Homebrew formulas for Orb's command-line tools.
 
 ## Install the Orb CLI
 
+One command — no `brew tap`, no `brew trust`:
+
 ```bash
-brew tap orbnet-app/tap
-brew trust orbnet-app/tap   # Homebrew 7: third-party taps must be trusted
-brew install orb-cli
+brew install orbnet-app/tap/orb-cli
 ```
 
-`brew trust` is not optional on Homebrew 7 — without it brew refuses to load the
-formula: *"Refusing to load formula orbnet-app/tap/orb-cli from untrusted tap"*.
-`brew trust --formula orbnet-app/tap/orb-cli` trusts just this formula if you
-would rather not trust the whole tap.
+Naming the tap in the install command makes Homebrew tap it and trust **only
+this one formula** on the way in, which is what Homebrew 7's tap-trust policy
+wants anyway (narrower than trusting the whole tap). Upgrade later with
+`brew upgrade orb-cli`.
 
-Upgrade with `brew upgrade orb-cli`.
+### Why not plain `brew install orb-cli`
+
+That spelling only works for formulae in `homebrew/core`, and core requires
+open source under a DFSG-compatible licence **built from source**. `orb-cli` is
+closed source, so core rejects it outright:
+
+> Our policy is that formulae in the core tap (homebrew/core) must be
+> open-source with a Debian Free Software Guidelines license and either built
+> from source or producing cross-platform binaries.
+> — [Acceptable Formulae](https://docs.brew.sh/Acceptable-Formulae)
+
+`homebrew/cask` is not an escape hatch: it is for pre-built applications, and
+on macOS "executable artefacts that Gatekeeper can assess must pass Homebrew's
+Gatekeeper checks"
+([Acceptable Casks](https://docs.brew.sh/Acceptable-Casks)). These binaries are
+only adhoc/linker-signed, so they do not pass. Plain `brew install orb-cli`
+would need `orb-cli` to become open source and buildable from source — a
+licensing decision, not a packaging one.
+
+If you would rather tap first:
+
+```bash
+brew tap orbnet-app/tap
+brew trust --formula orbnet-app/tap/orb-cli
+brew install orb-cli
+```
 
 The formula installs `orb-cli` for macOS on Apple silicon and Intel from the
 prod downloads host (`download.orbnet.app`), verified against the published
